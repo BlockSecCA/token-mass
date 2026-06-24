@@ -108,17 +108,18 @@ CPG under-resolves dynamic languages - see the methodology note below.)
 
 ## Results
 
-Two runs, on two **public** repos, producing two distinct fingerprints from the
-same token-free analysis:
+A run on [vulnerable-app](https://github.com/BlockSecCA/vulnerable-app) - a
+debranded, intentionally-vulnerable Express/TypeScript app that exists to be a
+target for analysis:
 
 | Target (public repo) | Graph | Verdict | Signature | Report |
 |---|---|---|---|---|
-| [GitNexus](https://github.com/BlockSecCA/GitNexus) (TypeScript) | 68 files, 157 edges | concentrated, **clean** | shared-types hub only, no cycles, thin tail | [gitnexus.md](docs/experiments/gitnexus.md) |
 | [vulnerable-app](https://github.com/BlockSecCA/vulnerable-app) (Express/TS) | 250 files, 551 edges | concentrated, **high-stakes hubs** | `lib/insecurity.ts` fan-in 63; a 5-file SCC; worst blast radius 77% of the codebase | [vulnerable-app.md](docs/experiments/vulnerable-app.md) |
 
-The vulnerable app's security primitives (`lib/insecurity.ts`) being a
-63-dependent hub is simultaneously a maintainability and a security observation,
-surfaced with zero tokens. GitNexus is the clean control case.
+The security primitives (`lib/insecurity.ts`) being a 63-dependent hub is
+simultaneously a maintainability and a security observation, surfaced with zero
+tokens. (For a clean contrast, run token-mass on any well-modularized repo; the
+shape inverts.)
 
 ## The report
 
@@ -131,9 +132,8 @@ surfaced with zero tokens. GitNexus is the clean control case.
 
 ## Reading order
 
-- **[docs/experiments/](docs/experiments/README.md)** - the index, and the methodology finding behind the runs
-- **[gitnexus.md](docs/experiments/gitnexus.md)** - run on a clean public repo
-- **[vulnerable-app.md](docs/experiments/vulnerable-app.md)** - run on the framework-heavy public target
+- **[docs/experiments/](docs/experiments/README.md)** - the index, and the methodology finding behind the run
+- **[vulnerable-app.md](docs/experiments/vulnerable-app.md)** - the run on the framework-heavy public target
 - **[method-challenges.md](docs/experiments/method-challenges.md)** - the limitations that require judgment (read before trusting a verdict)
 
 ## Methodology note (the honest part)

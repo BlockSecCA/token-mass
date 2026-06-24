@@ -9,12 +9,12 @@ is part of reading the results responsibly.
 ## 1. Graph construction is language-dependent (caveat)
 
 Joern's CPG under-resolves cross-file edges for TypeScript in both directions
-(0 call edges on GitNexus, 0 of 1,025 import edges on the vulnerable app), so the
-graphs here are built from source-parsed imports instead.
+(on the vulnerable app: 0 of 28,670 call edges, 0 of 1,025 import edges), so the
+graph here is built from source-parsed imports instead.
 
-- **Why the results differ in construction:** the vulnerable-app graph is built
-  *entirely* from source-parsed imports (the CPG contributed 0); GitNexus is a mix
-  of CPG and source. Different construction paths feed the same analyzers.
+- **Construction here:** the vulnerable-app graph is built *entirely* from
+  source-parsed imports (the CPG contributed 0 usable cross-file edges). The edge
+  source is swappable behind the normalized-graph seam; the analyzers don't change.
 - **Requires judgment:** trust a report only as far as its "Graph construction
   quality" section shows edges resolved. A sparse graph yields a floor, not the
   truth. We cannot qualify this per language or framework here; that needs a
@@ -25,14 +25,14 @@ graphs here are built from source-parsed imports instead.
 ## 2. The verdict is an uncalibrated heuristic (defect)
 
 The categorical verdict (clean / concentrated-with-hubs / diffuse) uses thresholds
-(SCC size, absolute fan-in relative to repo size) that were chosen to fit **two**
-repos. There is no principled cutoff between "clean" and "hubs" without a corpus
-of codebases with known shapes.
+(SCC size, absolute fan-in relative to repo size) that were chosen against a tiny
+sample of repos. There is no principled cutoff between "clean" and "hubs" without
+a corpus of codebases with known shapes.
 
-- **Be blunt about it:** the thresholds were tuned so GitNexus read "clean" and
-  the vulnerable app read "hubs". That is calibration to expectation at N=2. The
-  current form is more defensible than the first attempt (which used a
-  size-sensitive blast-fraction), but it is still overfit.
+- **Be blunt about it:** the thresholds were tuned so the sample repos came out
+  the way we already expected (clean vs hubs). That is calibration to expectation
+  on a tiny sample. The current form is more defensible than the first attempt
+  (which used a size-sensitive blast-fraction), but it is still overfit.
 - **What is trustworthy:** the underlying measurements (closures, SCC membership,
   fan-in counts, distributions) are deterministic graph facts and were never
   touched. Only the categorical label is unjustified.
@@ -45,9 +45,9 @@ of codebases with known shapes.
 
 The "source-parsed import edges: N" line counts only edges not already added by
 the CPG pass, so it understates the source parser's contribution when the CPG also
-contributed (GitNexus shows 28 though the parser found roughly 150; the 28 are the
-additional unique edges). The **total** edge count is correct; the per-source
-attribution is not a clean measurement.
+contributed (it reports only the *additional* unique edges the parser adds beyond
+the CPG's). The **total** edge count is correct; the per-source attribution is not
+a clean measurement.
 
 - **Requires judgment:** read the total edge count, not the per-source counts.
 - **Status:** a reporting bug, to fix.

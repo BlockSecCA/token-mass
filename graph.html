@@ -41,10 +41,6 @@
   <div class="sub" id="t-sub"></div>
   <div class="verdict">verdict: <span class="tag" id="t-verdict"></span></div>
 </div>
-<div id="switch" class="panel" style="padding:6px;">
-  <button data-src="docs/experiments/vulnerable-app.graph.json" class="on">vulnerable-app</button>
-  <button data-src="docs/experiments/gitnexus.graph.json">GitNexus</button>
-</div>
 <div id="legend" class="panel">
   <div class="row"><span class="dot" style="width:8px;height:8px;background:#6b7686"></span>node size = tokens in the file</div>
   <div class="row"><span class="dot" style="background:#ffb454"></span>fill = fan-in (how many depend on it → hub)</div>
@@ -129,10 +125,6 @@ async function load(src){
   });
 }
 
-document.querySelectorAll('#switch button').forEach(b=>{
-  b.onclick = ()=>{ document.querySelectorAll('#switch button').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); load(b.dataset.src); };
-});
 
 const q = new URLSearchParams(location.search).get('data');
 load(q || 'docs/experiments/vulnerable-app.graph.json');

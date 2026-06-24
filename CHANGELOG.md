@@ -20,6 +20,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Presentation: slide numbers (current/total); smaller base font, tighter
   spacing, and a flattened dense slide so content fits the viewport.
 
+### Changed
+- Dropped GitNexus as a sample target: it is itself a graph-analysis tool, so
+  featuring it as an analyzed codebase was confusing (and unkind to a real app).
+  vulnerable-app is the sole featured target - it is purpose-built to be one.
+
 ## [0.1.0]
 
 Initial release.
@@ -32,7 +37,7 @@ Initial release.
 - Analyzer suite (`tokenmass/analyze.py`): size / out-closure / in-closure
   distributions, SCCs, god-nodes, orphans, hot-core intersection, and a 3-way
   verdict (diffuse / concentrated-with-hubs / concentrated-clean).
-- Recorded experiments under `docs/experiments/` (vulnerable-app, GitNexus).
+- Recorded experiments under `docs/experiments/` (vulnerable-app).
 
 ### Notes
 - Joern under-resolves cross-file edges for TypeScript in both directions;
