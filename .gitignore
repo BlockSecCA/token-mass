@@ -1,0 +1,7 @@
+*.md.out
+*-report.md
+*.cpg.bin
+workspace/
+__pycache__/
+*.pyc
+.DS_Store

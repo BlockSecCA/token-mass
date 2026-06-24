@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#
+# token-mass — point at a repo, get a diagnostic report on its structural
+# "bill-pain" shape. Token-free: classical graph analysis over a Joern CPG.
+#
+#   ./token-mass <repo-path> [report.md]
+#
+# Requires the Joern engine (provisioned by joern-mcp/scripts/install.sh).
+#
+set -euo pipefail
+
+REPO="${1:?usage: token-mass <repo-path> [report.md]}"
+OUT="${2:-token-mass-report.md}"
+HERE="$(cd "$(dirname "$0")" && pwd)"
+JOERN_HOME="${JOERN_HOME:-$HOME/tools/joern-mcp/joern}"
+
+[ -d "$REPO" ] || { echo "no such repo: $REPO" >&2; exit 1; }
+[ -x "$JOERN_HOME/joern-parse" ] || {
+  echo "Joern not found at $JOERN_HOME. Run joern-mcp/scripts/install.sh first." >&2; exit 1; }
+
+REPO="$(cd "$REPO" && pwd)"
+WORK="$(mktemp -d)"
+trap 'rm -rf "$WORK"' EXIT
+
+echo "[1/3] building CPG for $REPO ..."
+"$JOERN_HOME/joern-parse" "$REPO" --output "$WORK/cpg.bin" >/dev/null 2>&1
+
+echo "[2/3] extracting normalized graph ..."
+TM_CPG="$WORK/cpg.bin" TM_OUT="$WORK" \
+  "$JOERN_HOME/joern" --script "$HERE/tokenmass/extract.sc" >/dev/null 2>&1
+# Source-parsed import edges: reliable cross-file signal for JS/TS, where the CPG
+# under-resolves. Feeds the same normalized graph. (No-op for non-JS/TS repos.)
+python3 "$HERE/tokenmass/imports_from_source.py" "$REPO" "$WORK/src_edges.tsv" >/dev/null 2>&1 || true
+
+echo "[3/3] analyzing ..."
+python3 "$HERE/tokenmass/analyze.py" "$WORK/methods.tsv" "$WORK/calls.tsv" "$REPO" "$OUT"
+
+echo "done -> $OUT"
