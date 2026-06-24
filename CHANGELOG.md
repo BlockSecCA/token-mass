@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `index.html` — reveal.js presentation embedding the live graph as an
   interactive slide. GitHub-Pages-ready (no build step).
 
+### Fixed
+- Presentation: clickable URLs on the closing slide; long text and the graph
+  caption now wrap on narrow viewports.
+
 ## [0.1.0]
 
 Initial release.

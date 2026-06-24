@@ -19,9 +19,13 @@
   .reveal li { margin:.35em 0; }
   .reveal code, .reveal .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; color:var(--accent); }
   .reveal small { color:#7d8896; }
+  .reveal section { overflow-wrap:anywhere; }
+  .reveal a { color:var(--accent); text-decoration:none; overflow-wrap:anywhere; }
+  .reveal a:hover { text-decoration:underline; }
   .caption { position:fixed; left:24px; bottom:22px; z-index:30; pointer-events:none;
              background:rgba(14,17,22,.78); border:1px solid #232a35; border-radius:10px;
-             padding:10px 14px; font-size:18px; color:#c9d4e0; max-width:46%; }
+             padding:10px 14px; font-size:clamp(13px,1.5vw,18px); color:#c9d4e0;
+             max-width:min(620px,88vw); overflow-wrap:anywhere; }
   .caption b { color:var(--accent); }
   .pill { display:inline-block; padding:.1em .6em; border-radius:999px; background:#3a2410; color:var(--accent); font-size:.7em; font-weight:600; }
 </style>
@@ -102,10 +106,10 @@
 
   <section class="center" data-background-color="#0e1116">
     <h2>token&#8209;mass</h2>
-    <p class="lead mono">github.com/BlockSecCA/token-mass</p>
+    <p class="lead"><a class="mono" href="https://github.com/BlockSecCA/token-mass">github.com/BlockSecCA/token-mass</a></p>
     <p><small>Diagnostic, token-free. Born from a tokenomics question, not a paper.<br>
-       Motivated by the broader tokenomics conversation — <span class="mono">tokeneconomics.com</span><br>
-       Sibling to <span class="mono">llm-cpg-exploration</span>.</small></p>
+       Motivated by the broader tokenomics conversation — <a class="mono" href="https://www.tokeneconomics.com/">tokeneconomics.com</a><br>
+       Sibling to <a class="mono" href="https://github.com/BlockSecCA/llm-cpg-exploration">llm-cpg-exploration</a>.</small></p>
   </section>
 
 </div></div>
