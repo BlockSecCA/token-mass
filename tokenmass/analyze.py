@@ -336,5 +336,26 @@ w("*Caveats: candidates not verdicts (a god-node may be a legitimate facade; an 
   "dispatch is invisible here, so a 'clean' result is not proof of health.*")
 
 Path(out_md).write_text("\n".join(L) + "\n")
+
+# ---- graph export (for visualization) ---------------------------------------
+import json
+hotset = set(hot)
+graph = {
+    "repo": repo_root.name,
+    "verdict": ("diffuse" if diffuse else ("hubs" if has_hub else "clean")),
+    "nodes": [{
+        "id": short(f),
+        "tokens": tok[f],
+        "fanin": fan_in[f],
+        "fanout": fan_out[f],
+        "scc": f in in_scc,
+        "hot": f in hotset,
+        "out_closure": out_tok[f],
+        "in_closure": in_tok[f],
+    } for f in files],
+    "edges": [{"source": short(a), "target": short(b)} for a in deps for b in deps[a]],
+}
+Path(str(out_md).rsplit(".", 1)[0] + ".graph.json").write_text(json.dumps(graph))
+
 print(f"report -> {out_md}  ({N} files, {edge_count} edges, {len(knots)} knots, "
-      f"{over} over-window, verdict={'diffuse' if diffuse else 'concentrated'})")
+      f"{over} over-window, verdict={'diffuse' if diffuse else ('hubs' if has_hub else 'clean')})")

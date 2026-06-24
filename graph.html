@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>token-mass · dependency graph</title>
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<style>
+  :root { --bg:#0e1116; --panel:#171c24; --ink:#c9d4e0; --muted:#7d8896; }
+  * { box-sizing: border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+              font:14px/1.4 ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif; }
+  #cy { position:absolute; inset:0; }
+  .panel { position:absolute; z-index:5; background:rgba(23,28,36,.92);
+           border:1px solid #232a35; border-radius:10px; padding:12px 14px; backdrop-filter:blur(4px); }
+  #title { top:14px; left:14px; max-width:340px; }
+  #title h1 { margin:0 0 4px; font-size:16px; letter-spacing:.2px; }
+  #title .sub { color:var(--muted); font-size:12px; }
+  #title .verdict { margin-top:8px; font-size:12px; }
+  #title .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-weight:600; }
+  .tag.hubs { background:#3a2410; color:#ffb454; }
+  .tag.clean { background:#10301c; color:#5fd39a; }
+  .tag.diffuse { background:#3a1414; color:#ff7a7a; }
+  #legend { bottom:14px; left:14px; font-size:12px; }
+  #legend .row { display:flex; align-items:center; gap:8px; margin:4px 0; color:var(--muted); }
+  #legend .dot { width:14px; height:14px; border-radius:50%; flex:none; }
+  #switch { top:14px; right:14px; display:flex; gap:6px; }
+  #switch button { background:var(--panel); color:var(--ink); border:1px solid #2a323d;
+                   border-radius:8px; padding:6px 10px; cursor:pointer; font-size:12px; }
+  #switch button.on { border-color:#ffb454; color:#ffb454; }
+  #tip { position:absolute; z-index:6; pointer-events:none; display:none; max-width:300px;
+         font-size:12px; line-height:1.5; }
+  #tip b { color:#fff; }
+  #tip .k { color:var(--muted); }
+</style>
+</head>
+<body>
+<div id="cy"></div>
+<div id="title" class="panel">
+  <h1 id="t-repo">loading…</h1>
+  <div class="sub" id="t-sub"></div>
+  <div class="verdict">verdict: <span class="tag" id="t-verdict"></span></div>
+</div>
+<div id="switch" class="panel" style="padding:6px;">
+  <button data-src="docs/experiments/vulnerable-app.graph.json" class="on">vulnerable-app</button>
+  <button data-src="docs/experiments/gitnexus.graph.json">GitNexus</button>
+</div>
+<div id="legend" class="panel">
+  <div class="row"><span class="dot" style="width:8px;height:8px;background:#6b7686"></span>node size = tokens in the file</div>
+  <div class="row"><span class="dot" style="background:#ffb454"></span>fill = fan-in (how many depend on it → hub)</div>
+  <div class="row"><span class="dot" style="background:#171c24;border:2px solid #ff5a5a"></span>red ring = in a cyclic knot (SCC)</div>
+  <div class="row"><span class="dot" style="background:#171c24;border:2px solid #ffd54a"></span>gold ring = hot core</div>
+</div>
+<div id="tip" class="panel"></div>
+
+<script>
+const tip = document.getElementById('tip');
+let cy;
+
+function color(fanin, maxfan){
+  // light slate -> deep orange as fan-in grows
+  const t = Math.min(1, fanin / Math.max(1, maxfan));
+  const a = [90,103,120], b = [255,180,84];
+  const m = a.map((x,i)=> Math.round(x + (b[i]-x)*Math.pow(t,0.6)));
+  return `rgb(${m[0]},${m[1]},${m[2]})`;
+}
+
+async function load(src){
+  const g = await (await fetch(src)).json();
+  const maxfan = Math.max(1, ...g.nodes.map(n=>n.fanin));
+  const maxtok = Math.max(1, ...g.nodes.map(n=>n.tokens));
+  const els = [];
+  for (const n of g.nodes){
+    const size = 8 + 46 * Math.sqrt(n.tokens / maxtok);
+    els.push({ data: { id:n.id, label:n.id.split('/').pop(), size,
+      fill: color(n.fanin, maxfan),
+      border: n.scc ? '#ff5a5a' : (n.hot ? '#ffd54a' : 'rgba(0,0,0,0)'),
+      bw: (n.scc || n.hot) ? 3 : 0,
+      tokens:n.tokens, fanin:n.fanin, fanout:n.fanout,
+      outc:n.out_closure, inc:n.in_closure } });
+  }
+  for (const e of g.edges) els.push({ data:{ source:e.source, target:e.target } });
+
+  document.getElementById('t-repo').textContent = g.repo;
+  document.getElementById('t-sub').textContent = `${g.nodes.length} files · ${g.edges.length} dependency edges`;
+  const v = document.getElementById('t-verdict'); v.textContent = g.verdict; v.className = 'tag ' + g.verdict;
+
+  if (cy) cy.destroy();
+  cy = cytoscape({
+    container: document.getElementById('cy'),
+    elements: els,
+    style: [
+      { selector:'node', style:{
+          'width':'data(size)', 'height':'data(size)',
+          'background-color':'data(fill)',
+          'border-width':'data(bw)', 'border-color':'data(border)',
+          'label':'', }},
+      { selector:'node[size > 34]', style:{
+          'label':'data(label)', 'color':'#cdd7e2', 'font-size':9,
+          'text-valign':'center', 'text-halign':'center', 'text-max-width':70,
+          'text-wrap':'ellipsis' }},
+      { selector:'edge', style:{
+          'width':0.6, 'line-color':'#2a3340', 'curve-style':'haystack',
+          'opacity':0.5, 'target-arrow-shape':'none' }},
+      { selector:'.faded', style:{ 'opacity':0.08 }},
+      { selector:'.hl', style:{ 'opacity':1, 'line-color':'#ffb454', 'width':1.4 }},
+    ],
+    layout: { name:'cose', animate:false, nodeRepulsion:9000, idealEdgeLength:55,
+              gravity:0.4, numIter:1200, fit:true, padding:40 },
+    wheelSensitivity:0.25,
+  });
+
+  cy.on('mouseover','node', evt=>{
+    const d = evt.target.data();
+    tip.style.display='block';
+    tip.innerHTML = `<b>${d.id}</b><br>`+
+      `<span class="k">tokens</span> ${d.tokens.toLocaleString()} &nbsp; `+
+      `<span class="k">fan-in</span> ${d.fanin} &nbsp; <span class="k">fan-out</span> ${d.fanout}<br>`+
+      `<span class="k">out-closure</span> ${d.outc.toLocaleString()} &nbsp; `+
+      `<span class="k">blast radius</span> ${d.inc.toLocaleString()}`;
+    const nbr = evt.target.closedNeighborhood();
+    cy.elements().addClass('faded'); nbr.removeClass('faded'); nbr.edges().addClass('hl');
+  });
+  cy.on('mouseout','node', ()=>{ tip.style.display='none';
+    cy.elements().removeClass('faded hl'); });
+  cy.on('mousemove', evt=>{
+    tip.style.left = (evt.originalEvent.clientX + 16) + 'px';
+    tip.style.top  = (evt.originalEvent.clientY + 16) + 'px';
+  });
+}
+
+document.querySelectorAll('#switch button').forEach(b=>{
+  b.onclick = ()=>{ document.querySelectorAll('#switch button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); load(b.dataset.src); };
+});
+
+const q = new URLSearchParams(location.search).get('data');
+load(q || 'docs/experiments/vulnerable-app.graph.json');
+</script>
+</body>
+</html>

@@ -36,13 +36,13 @@
   - fan-in  12 | core/graph/types.ts
   - fan-in  10 | storage/repo-manager.ts
   - fan-in   8 | mcp/local/local-backend.ts
-  - fan-in   6 | lib/utils.ts
   - fan-in   6 | core/ingestion/utils.ts
+  - fan-in   6 | lib/utils.ts
 - **god-nodes (highest fan-out — pull in the most):**
   - fan-out  15 | core/ingestion/pipeline.ts
   - fan-out  12 | cli/index.ts
-  - fan-out  10 | core/ingestion/parsing-processor.ts
   - fan-out  10 | server/api.ts
+  - fan-out  10 | core/ingestion/parsing-processor.ts
   - fan-out   9 | core/ingestion/call-processor.ts
 - **orphans (no internal dependents):** 4 files (entrypoints + possibly dead code)
 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>token-mass</title>
+<link rel="stylesheet" href="https://unpkg.com/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://unpkg.com/reveal.js@5.1.0/dist/theme/black.css">
+<style>
+  :root { --accent:#ffb454; }
+  .reveal { font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif; }
+  .reveal h1,.reveal h2,.reveal h3 { text-transform:none; letter-spacing:-.01em; font-weight:700; }
+  .reveal h1 { font-size:2.6em; }
+  .reveal .accent { color:var(--accent); }
+  .reveal .lead { color:#9fb0c0; }
+  .reveal section { text-align:left; }
+  .reveal section.center { text-align:center; }
+  .reveal ul { width:100%; }
+  .reveal li { margin:.35em 0; }
+  .reveal code, .reveal .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; color:var(--accent); }
+  .reveal small { color:#7d8896; }
+  .caption { position:fixed; left:24px; bottom:22px; z-index:30; pointer-events:none;
+             background:rgba(14,17,22,.78); border:1px solid #232a35; border-radius:10px;
+             padding:10px 14px; font-size:18px; color:#c9d4e0; max-width:46%; }
+  .caption b { color:var(--accent); }
+  .pill { display:inline-block; padding:.1em .6em; border-radius:999px; background:#3a2410; color:var(--accent); font-size:.7em; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+  <section class="center" data-background-color="#0e1116">
+    <h1>token&#8209;mass</h1>
+    <h3 class="lead">Where does a codebase <span class="accent">hurt</span> to work on?</h3>
+    <p><small>Measured with classical graph analysis. Zero tokens.</small></p>
+  </section>
+
+  <section data-background-color="#0e1116">
+    <h2>The keyhole</h2>
+    <p class="lead">A real codebase doesn't fit in a context window.</p>
+    <ul>
+      <li>You work it through a <span class="accent">keyhole</span>: slices, not the whole thing.</li>
+      <li>What it costs = how much you must <em>load per task</em>.</li>
+      <li>That is not the bulk. It's the structure.</li>
+    </ul>
+  </section>
+
+  <section data-background-color="#0e1116">
+    <h2>The pain is the <span class="accent">shape</span></h2>
+    <ul>
+      <li>What you must load to change a file = its <strong>closure</strong> in the dependency graph.</li>
+      <li>Closures, coupling, cycles — graph properties, not line counts.</li>
+      <li><span class="lead">Bulk is the mean. Pain is the distribution.</span></li>
+    </ul>
+  </section>
+
+  <section data-background-color="#0e1116">
+    <h2>Measure it for free</h2>
+    <ul>
+      <li>Closures, SCCs, fan-in, hot core = <strong>classical graph algorithms</strong>.</li>
+      <li>Deterministic. No LLM. <span class="accent">No tokens.</span></li>
+      <li>The LLM is reserved for two bookends:
+        <ul><li>completing edges a parser can't resolve,</li>
+            <li>judging whether a flagged structure is really a problem.</li></ul></li>
+    </ul>
+    <p><small>The cheapest tool for measuring the expensive resource spends none of it.</small></p>
+  </section>
+
+  <section class="center" data-background-color="#0e1116">
+    <h2>See it</h2>
+    <p class="lead">A real run: the <span class="mono">vulnerable-app</span> backend.<br>
+       250 files · 551 dependency edges.</p>
+    <p><small>Next slide is live — drag, zoom, hover. Toggle <span class="mono">GitNexus</span> for the clean contrast.</small></p>
+  </section>
+
+  <section data-background-iframe="graph.html" data-background-interactive data-background-color="#0e1116">
+    <div class="caption">
+      <b>Each node a file</b>, sized by tokens. Orange = fan-in (a hub). Red ring = a cyclic knot.
+      Gold ring = the hot core. Hover any node.
+    </div>
+  </section>
+
+  <section data-background-color="#0e1116">
+    <h2>What the graph says</h2>
+    <ul>
+      <li><span class="mono">lib/insecurity.ts</span> — <strong>fan-in 63</strong>. The security primitives are a hub: a change there re-implicates <strong>77%</strong> of the app.</li>
+      <li>A <strong>5-file cyclic knot</strong> (SCC) you can't keyhole apart.</li>
+      <li>The median file is cheap; the pain concentrates in a few foundational hubs.</li>
+    </ul>
+    <p><span class="pill">verdict</span> &nbsp;concentrated, with high-stakes hubs.</p>
+  </section>
+
+  <section data-background-color="#0e1116">
+    <h2>The honest part</h2>
+    <ul>
+      <li>It's a <strong>re-derivation</strong>: MacCormack's <em>propagation cost</em>, Aider's repo-map. Not new.</li>
+      <li>Construction is <strong>language-dependent</strong> — Joern under-resolves TS, so source-parsed imports are used.</li>
+      <li>The verdict label is an <strong>uncalibrated heuristic</strong> — a prompt, not a measurement.</li>
+    </ul>
+    <p class="lead">Trust the numbers. Judge the labels.</p>
+  </section>
+
+  <section class="center" data-background-color="#0e1116">
+    <h2>token&#8209;mass</h2>
+    <p class="lead mono">github.com/BlockSecCA/token-mass</p>
+    <p><small>Diagnostic, token-free. Born from a tokenomics question, not a paper.<br>
+       Sibling to <span class="mono">llm-cpg-exploration</span>.</small></p>
+  </section>
+
+</div></div>
+<script src="https://unpkg.com/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({ hash:true, transition:'fade', controls:true, progress:true,
+                      width:1280, height:760, margin:0.06 });
+</script>
+</body>
+</html>

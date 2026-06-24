@@ -2,6 +2,18 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.0]
+
+### Added
+- Graph JSON export from `analyze.py` (`<report>.graph.json`): nodes with
+  tokens / fan-in / fan-out / SCC / hot-core flags and closures, plus edges, for
+  visualization.
+- `graph.html` — interactive dependency-graph viewer (Cytoscape): nodes sized by
+  tokens, fill by fan-in (hubs), red ring for SCC, gold ring for hot core; hover
+  for stats; switch between example runs.
+- `index.html` — reveal.js presentation embedding the live graph as an
+  interactive slide. GitHub-Pages-ready (no build step).
+
 ## [0.1.0]
 
 Initial release.

@@ -30,7 +30,7 @@
 ## Structure & pathologies
 
 - **strongly-connected components (knots):** 1 non-trivial
-  - size **5**, 5,652 tok — e.g. webhook.ts, vulnCodeSnippet.ts, vulnCodeFixes.ts
+  - size **5**, 5,652 tok — e.g. vulnCodeFixes.ts, vulnCodeSnippet.ts, antiCheat.ts
 
 - **god-nodes (highest fan-in — 'always loaded'):**
   - fan-in  63 | lib/insecurity.ts
@@ -51,11 +51,11 @@
 Files that are simultaneously expensive to understand (out-closure), dangerous to
 change (in-closure), and/or trapped in a knot (SCC). These dominate the pain:
 
-- routes/vulnCodeSnippet.ts — out 11,709 / blast 75,973 tok  [SCC]
-- lib/webhook.ts — out 11,709 / blast 75,973 tok  [SCC]
 - lib/antiCheat.ts — out 11,709 / blast 75,973 tok  [SCC]
-- lib/challengeUtils.ts — out 11,709 / blast 75,973 tok  [SCC]
+- lib/webhook.ts — out 11,709 / blast 75,973 tok  [SCC]
+- routes/vulnCodeSnippet.ts — out 11,709 / blast 75,973 tok  [SCC]
 - routes/vulnCodeFixes.ts — out 11,709 / blast 75,973 tok  [SCC]
+- lib/challengeUtils.ts — out 11,709 / blast 75,973 tok  [SCC]
 - data/datacreator.ts — out 27,070 / blast 15,808 tok
 - routes/verify.ts — out 19,265 / blast 16,532 tok
 - models/relations.ts — out 20,669 / blast 12,803 tok
