@@ -3,6 +3,8 @@
 How expensive is a codebase to *work on* through a keyhole - and can you tell
 before spending a single token finding out?
 
+**[View the presentation](https://blocksecca.github.io/token-mass/)** · [the interactive graph](https://blocksecca.github.io/token-mass/graph.html)
+
 A codebase too big for any context window has to be worked through a "keyhole":
 you load slices, not the whole thing. The token cost of that is **not** the bulk;
 it's how much you must load per task, which is a property of the **dependency
