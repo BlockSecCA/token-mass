@@ -61,6 +61,18 @@
   </section>
 
   <section data-background-color="#0e1116">
+    <h2>What hurts an LLM following the graph</h2>
+    <ul>
+      <li><strong>Big closure</strong> - load everything a file reaches <span class="lead">(datacreator.ts: ~27k tokens)</span></li>
+      <li><strong>Cyclic knot (SCC)</strong> - a mutual dependency can't be loaded in pieces <span class="lead">(the app's 5-file knot)</span></li>
+      <li><strong>God-node (high fan-in)</strong> - reloaded constantly; change = huge blast radius <span class="lead">(insecurity.ts: 63 dependents)</span></li>
+      <li><strong>Deep chain</strong> - many hops before the code makes sense <span class="lead">(route &rarr; service &rarr; model &rarr; config)</span></li>
+      <li><strong>Over-window core</strong> - closure bigger than the context window <span class="lead">(none here; the monolith failure mode)</span></li>
+      <li><strong>Invisible edge (DI / reflection)</strong> - real coupling the graph can't see <span class="lead">(the one it hides, not reveals)</span></li>
+    </ul>
+  </section>
+
+  <section data-background-color="#0e1116">
     <h2>Measure it for free</h2>
     <ul>
       <li>Closures, SCCs, fan-in, hot core = <strong>classical graph algorithms</strong>.</li>

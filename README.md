@@ -130,6 +130,21 @@ shape inverts.)
 - **Hot core** - the files where understanding-cost, change-cost, and knots coincide
 - **Verdict** - a heuristic label (read [the caveats](docs/experiments/method-challenges.md))
 
+## What to look for (graph patterns that hurt an LLM)
+
+The specific structures that make a codebase expensive for an LLM to follow
+through a keyhole. The first five are what the graph *reveals*; the last is what
+it *can't* see.
+
+| Graph pattern | Why it hurts an LLM following dependencies | Example (vulnerable-app) |
+|---|---|---|
+| **Big closure** | To safely change a file you must load everything it transitively reaches | `data/datacreator.ts`: out-closure ~27k tokens |
+| **Cyclic knot (SCC)** | A mutual dependency can't be loaded in pieces; if it exceeds the window, no safe keyhole | 5-file knot: `vulnCodeSnippet` / `vulnCodeFixes` / `antiCheat` / `webhook` / `challengeUtils` |
+| **God-node (high fan-in)** | Reloaded constantly; changing it re-implicates most of the app | `lib/insecurity.ts`: 63 dependents (worst blast radius 77% of the codebase) |
+| **Deep chain** | Many hops to follow before the code makes sense | route -> service -> model -> config |
+| **Over-window core** | A unit whose minimal closure exceeds the context window: the model can't hold enough to be correct | none here (it all fit); the failure mode of large monoliths |
+| **Invisible edge** (DI / reflection / dynamic) | Real coupling the static graph can't see; the LLM follows visible deps and silently misses it | middleware wired by string/config |
+
 ## Reading order
 
 - **[docs/experiments/](docs/experiments/README.md)** - the index, and the methodology finding behind the run
