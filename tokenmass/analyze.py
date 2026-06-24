@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-analyze.py — turn the normalized graph (methods.tsv + calls.tsv) into a
+analyze.py - turn the normalized graph (methods.tsv + calls.tsv) into a
 diagnostic report on a codebase's structural "bill-pain" shape.
 
 Everything here is classical graph analysis. No LLM, no tokens. The report
@@ -66,7 +66,7 @@ deps = collections.defaultdict(set)   # f -> files f depends on
 # ---- import edges (the reliable cross-file signal for dynamic languages) ----
 def resolve_spec(importing_raw, spec):
     if not spec.startswith("."):
-        return None  # external/package import — not part of the internal graph
+        return None  # external/package import - not part of the internal graph
     base = resolve(importing_raw)
     if not base:
         return None
@@ -238,7 +238,7 @@ w()
 w("> Diagnostic only. This describes the **shape** of the codebase's structural")
 w("> working-cost (the 'keyhole' difficulty), in reference-tokenizer tokens. It does")
 w("> **not** forecast a bill and does **not** propose fixes. All metrics are classical")
-w("> graph analysis over the file dependency graph (imports + resolved calls) —")
+w("> graph analysis over the file dependency graph (imports + resolved calls) -")
 w("> no LLM, no tokens spent.")
 w()
 w("## Graph construction quality")
@@ -253,7 +253,7 @@ w(f"- CPG call edges (cross-file): {call_resolved:,} resolved / {call_rows:,} ca
 w(f"- reference tokenizer: ~{CPT} chars/token | window threshold: {WINDOW:,} tok")
 if (edge_count / N if N else 0) < 0.5:
     w()
-    w("> ⚠️ **Sparse graph.** Few cross-file edges resolved — typical for dynamic languages / "
+    w("> ⚠️ **Sparse graph.** Few cross-file edges resolved - typical for dynamic languages / "
       "higher-order code, or a genuinely loosely-coupled codebase. Closures below are a floor; "
       "treat the shapes as indicative, not exact.")
 w()
@@ -266,25 +266,25 @@ w("## Distributions (the pain is the shape, not the sum)")
 w()
 w(f"- **size** (tokens/file): {dist_line(tok)}")
 w(f"- **out-closure** (understand a file + all it imports): {dist_line(out_tok)}")
-w(f"- **in-closure** (blast radius — change it, re-verify these): {dist_line(in_tok)}")
+w(f"- **in-closure** (blast radius - change it, re-verify these): {dist_line(in_tok)}")
 w()
 w(f"- files whose **out-closure exceeds the {WINDOW:,} window**: "
-  f"**{over}/{N}** ({100*over/N:.0f}%) — these have no safe keyhole" if N else "")
+  f"**{over}/{N}** ({100*over/N:.0f}%) - these have no safe keyhole" if N else "")
 w()
 w("## Structure & pathologies")
 w()
 w(f"- **strongly-connected components (knots):** {len(knots)} non-trivial")
 for c in knots[:5]:
     cf = collections.Counter(Path(x).name.split('/')[-1] for x in c)
-    w(f"  - size **{len(c)}**, {sum(tok[x] for x in c):,} tok — e.g. "
+    w(f"  - size **{len(c)}**, {sum(tok[x] for x in c):,} tok - e.g. "
       + ", ".join(n for n, _ in cf.most_common(3)))
 if not knots:
-    w("  - none — the dependency graph is a DAG (no irreducible cyclic core)")
+    w("  - none - the dependency graph is a DAG (no irreducible cyclic core)")
 w()
-w("- **god-nodes (highest fan-in — 'always loaded'):**")
+w("- **god-nodes (highest fan-in - 'always loaded'):**")
 for f in sorted(files, key=lambda x: -fan_in[x])[:5]:
     w(f"  - fan-in {fan_in[f]:>3} | {short(f)}")
-w("- **god-nodes (highest fan-out — pull in the most):**")
+w("- **god-nodes (highest fan-out - pull in the most):**")
 for f in sorted(files, key=lambda x: -fan_out[x])[:5]:
     w(f"  - fan-out {fan_out[f]:>3} | {short(f)}")
 w(f"- **orphans (no internal dependents):** {len(orphans)} files "
@@ -298,19 +298,19 @@ w()
 for f in hot:
     tags = []
     if f in in_scc: tags.append("SCC")
-    w(f"- {short(f)} — out {out_tok[f]:,} / blast {in_tok[f]:,} tok"
+    w(f"- {short(f)} - out {out_tok[f]:,} / blast {in_tok[f]:,} tok"
       + (f"  [{', '.join(tags)}]" if tags else ""))
 w()
 w("## Verdict")
 w()
 if diffuse:
     w("**Diffuse pain.** High median closure / large over-window fraction: coupling is "
-      "systemic, not localized. No single refactor relieves it — budget for it or restructure "
+      "systemic, not localized. No single refactor relieves it - budget for it or restructure "
       "broadly. This is the Conway-bound / legacy signature.")
 elif has_hub:
     hubs = ", ".join(f"{short(f)} (fan-in {fan_in[f]})" for f in top_fi)
     w("**Concentrated, but with high-stakes hubs.** Most files are cheap to work "
-      f"(median out-closure {med_out:,} tok), so day-to-day pain is localized — but a few "
+      f"(median out-closure {med_out:,} tok), so day-to-day pain is localized - but a few "
       "foundational hubs carry outsized blast radius: a change there re-implicates much of the "
       "codebase.")
     w()
@@ -319,7 +319,7 @@ elif has_hub:
     if largest_scc:
         w(f"- cyclic knot of {largest_scc} files (cannot be keyholed apart)")
     w()
-    w("Refactorable, but these hubs are where leverage *and* risk concentrate — the first "
+    w("Refactorable, but these hubs are where leverage *and* risk concentrate - the first "
       "targets to decouple, and the most dangerous to touch.")
 else:
     w("**Concentrated pain.** Low median closure, thin tail, no severe hubs: the codebase is "
@@ -332,7 +332,7 @@ w("> *The verdict label is an uncalibrated heuristic (thresholds fit to few repo
 w()
 w("---")
 w("*Caveats: candidates not verdicts (a god-node may be a legitimate facade; an SCC may be "
-  "essential domain coupling). Static graph only — coupling hidden in DI/reflection/dynamic "
+  "essential domain coupling). Static graph only - coupling hidden in DI/reflection/dynamic "
   "dispatch is invisible here, so a 'clean' result is not proof of health.*")
 
 Path(out_md).write_text("\n".join(L) + "\n")

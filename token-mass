@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# token-mass — point at a repo, get a diagnostic report on its structural
+# token-mass - point at a repo, get a diagnostic report on its structural
 # "bill-pain" shape. Token-free: classical graph analysis over a Joern CPG.
 #
 #   ./token-mass <repo-path> [report.md]

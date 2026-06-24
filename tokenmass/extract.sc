@@ -1,4 +1,4 @@
-// extract.sc — dump a normalized graph from a Joern CPG.
+// extract.sc - dump a normalized graph from a Joern CPG.
 //
 // Emits two TSVs into $TM_OUT:
 //   methods.tsv : <methodFullName>\t<file>\t<startLine>\t<endLine>

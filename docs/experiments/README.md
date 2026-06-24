@@ -4,7 +4,7 @@ Target-practice runs of `token-mass`, recorded for comparison. Sibling in spirit
 to [llm-cpg-exploration](https://github.com/BlockSecCA/llm-cpg-exploration), which
 ran the same CPG machinery against the same vulnerable app for *security* design
 flaws. Here the question is different: **what shape is the codebase's structural
-working-cost** — where would an LLM struggle to keyhole through it, and why —
+working-cost** - where would an LLM struggle to keyhole through it, and why -
 answered with zero tokens, by graph analysis alone.
 
 ## Runs
@@ -15,7 +15,7 @@ answered with zero tokens, by graph analysis alone.
 | [GitNexus](gitnexus.md) (TS) | 68 | 157 | concentrated, **clean** | shared-types hub only; no SCC; thin tail |
 
 Two genuinely different **fingerprints** from one tool. The vulnerable app's
-security primitives (`lib/insecurity.ts`) are a 63-dependent hub — a change there
+security primitives (`lib/insecurity.ts`) are a 63-dependent hub - a change there
 re-implicates three-quarters of the codebase, which is both a maintainability and
 a *security* observation. GitNexus is the clean, localized case: cheap to work
 almost everywhere, no irreducible knot.
@@ -38,7 +38,7 @@ directions**:
 - vulnerable-app: CPG **import** edges resolved = 0 / 1,025 (extension-less relative imports)
 
 A Joern-only graph for TypeScript is near-empty and the verdict it produces is an
-artifact of that sparsity. The fix — behind the same normalized-graph seam — is
+artifact of that sparsity. The fix - behind the same normalized-graph seam - is
 **source-parsed import edges**, which are textually trivial and 100% reliable for
 JS/TS. This empirically confirms the project's core thesis: *graph construction is
 the language-dependent weak link; the analysis on top is universal.* For

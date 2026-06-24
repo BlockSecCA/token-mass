@@ -36,7 +36,7 @@
   <section class="center" data-background-color="#0e1116">
     <h1>token&#8209;mass</h1>
     <h3 class="lead">Where does a codebase <span class="accent">hurt an LLM</span> to work on?</h3>
-    <p><small>The tokenomics lens: the cost is <em>tokens</em> spent through a context-window keyhole, not developer ergonomics.<br>Measured with classical graph analysis — zero tokens.</small></p>
+    <p><small>The tokenomics lens: the cost is <em>tokens</em> spent through a context-window keyhole, not developer ergonomics.<br>Measured with classical graph analysis - zero tokens.</small></p>
   </section>
 
   <section data-background-color="#0e1116">
@@ -53,7 +53,7 @@
     <h2>The pain is the <span class="accent">shape</span></h2>
     <ul>
       <li>What you must load to change a file = its <strong>closure</strong> in the dependency graph.</li>
-      <li>Closures, coupling, cycles — graph properties, not line counts.</li>
+      <li>Closures, coupling, cycles - graph properties, not line counts.</li>
       <li><span class="lead">Bulk is the mean. Pain is the distribution.</span></li>
     </ul>
   </section>
@@ -74,7 +74,7 @@
     <h2>See it</h2>
     <p class="lead">A real run: the <span class="mono">vulnerable-app</span> backend.<br>
        250 files · 551 dependency edges.</p>
-    <p><small>Next slide is live — drag, zoom, hover. Toggle <span class="mono">GitNexus</span> for the clean contrast.</small></p>
+    <p><small>Next slide is live - drag, zoom, hover. Toggle <span class="mono">GitNexus</span> for the clean contrast.</small></p>
   </section>
 
   <section data-background-iframe="graph.html" data-background-interactive data-background-color="#0e1116">
@@ -87,7 +87,7 @@
   <section data-background-color="#0e1116">
     <h2>What the graph says</h2>
     <ul>
-      <li><span class="mono">lib/insecurity.ts</span> — <strong>fan-in 63</strong>. The security primitives are a hub: a change there re-implicates <strong>77%</strong> of the app.</li>
+      <li><span class="mono">lib/insecurity.ts</span> - <strong>fan-in 63</strong>. The security primitives are a hub: a change there re-implicates <strong>77%</strong> of the app.</li>
       <li>A <strong>5-file cyclic knot</strong> (SCC) you can't keyhole apart.</li>
       <li>The median file is cheap; the pain concentrates in a few foundational hubs.</li>
     </ul>
@@ -98,8 +98,8 @@
     <h2>The honest part</h2>
     <ul>
       <li>It's a <strong>re-derivation</strong>: MacCormack's <em>propagation cost</em>, Aider's repo-map. Not new.</li>
-      <li>Construction is <strong>language-dependent</strong> — Joern under-resolves TS, so source-parsed imports are used.</li>
-      <li>The verdict label is an <strong>uncalibrated heuristic</strong> — a prompt, not a measurement.</li>
+      <li>Construction is <strong>language-dependent</strong> - Joern under-resolves TS, so source-parsed imports are used.</li>
+      <li>The verdict label is an <strong>uncalibrated heuristic</strong> - a prompt, not a measurement.</li>
     </ul>
     <p class="lead">Trust the numbers. Judge the labels.</p>
   </section>
@@ -108,7 +108,7 @@
     <h2>token&#8209;mass</h2>
     <p class="lead"><a class="mono" href="https://github.com/BlockSecCA/token-mass">github.com/BlockSecCA/token-mass</a></p>
     <p><small>Diagnostic, token-free. Born from a tokenomics question, not a paper.<br>
-       Motivated by the broader tokenomics conversation — <a class="mono" href="https://www.tokeneconomics.com/">tokeneconomics.com</a><br>
+       Motivated by the broader tokenomics conversation - <a class="mono" href="https://www.tokeneconomics.com/">tokeneconomics.com</a><br>
        Sibling to <a class="mono" href="https://github.com/BlockSecCA/llm-cpg-exploration">llm-cpg-exploration</a>.</small></p>
   </section>
 

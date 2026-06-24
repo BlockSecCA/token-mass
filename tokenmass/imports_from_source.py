@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-imports_from_source.py — extract file->file dependency edges by parsing imports
+imports_from_source.py - extract file->file dependency edges by parsing imports
 directly from JS/TS source.
 
 Why this exists: Joern's CPG import/call resolution is unreliable for dynamic
 languages (it returned 0 usable cross-file edges on real TS codebases, in both
 directions). Imports, however, are textually trivial and 100% reliable to parse.
 This is a language-specific extractor that feeds the SAME normalized graph the
-analyzers consume — the seam stays intact; only the edge source is swapped.
+analyzers consume - the seam stays intact; only the edge source is swapped.
 
 Emits TSV: <srcAbsPath>\t<dstAbsPath>  (one resolved internal import per line)
 

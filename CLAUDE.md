@@ -21,13 +21,13 @@ The **normalized graph** (nodes = files w/ token size, edges = dependencies) is
 the seam between construction and analysis. Keep it that way:
 - The extractor (`extract.sc`) may be language-/Joern-specific and imperfect.
 - The analyzers (`analyze.py`) are pure graph algorithms and must stay
-  language-agnostic — they consume only the normalized graph.
+  language-agnostic - they consume only the normalized graph.
 
 ## Scope discipline
 
 This is **diagnostic only**. It describes the shape of pain; it does not forecast
 a bill and does not fix code. Every report metric carries its caveat. Do not add
-"estimated cost = $X" outputs — that crosses into forecasting, which the project
+"estimated cost = $X" outputs - that crosses into forecasting, which the project
 deliberately refuses (the bill is dominated by agent behaviour the static graph
 can't observe).
 
@@ -35,7 +35,7 @@ can't observe).
 
 - Graph math in Python (stdlib only), CPG extraction in CPGQL.
 - Reference tokenizer is a constant (chars/token); model-specific tokenizers are
-  out of scope by design — the measure is model-free "mass," not per-model weight.
+  out of scope by design - the measure is model-free "mass," not per-model weight.
 - Commit format: `scope(area): summary` (feat/fix/refactor/docs/chore).
 
 ## Prerequisites
