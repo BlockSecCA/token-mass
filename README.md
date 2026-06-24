@@ -1,19 +1,34 @@
 # token-mass
 
-Point it at a repo, say go, get a report on the **shape of the codebase's
-structural working-cost** — where an LLM will struggle to keyhole through it,
-and why.
+How expensive is a codebase to *work on* through a keyhole — and can you tell
+before spending a single token finding out?
+
+A codebase too big for any context window has to be worked through a "keyhole":
+you load slices, not the whole thing. The token cost of that is **not** the bulk;
+it's how much you must load per task, which is a property of the **dependency
+graph**, not the line count. token-mass measures that shape — with classical
+graph analysis, **no LLM and no tokens spent**.
+
+It is the sibling of
+[llm-cpg-exploration](https://github.com/BlockSecCA/llm-cpg-exploration): the same
+CPG machinery, a different question. That project asked whether an LLM could find
+*security* design flaws in code it never reads. This one asks where a codebase
+will *hurt* to work on, and answers it deterministically, for free.
 
 ```bash
 ./token-mass /path/to/repo report.md
 ```
 
-## What it does (and doesn't)
+## What was done, and why
 
-A codebase too big for any context window has to be worked through a "keyhole" —
-you load slices, not the whole thing. The token cost of doing that is **not** the
-bulk; it's how much you must load per task, which is a property of the
-**dependency graph**, not the line count. token-mass measures that shape.
+The premise came from a simple FinOps-for-AI observation: you pay for tokens by
+the token, regardless of value, so the cheapest way to manage token pain is to
+spend as little as possible *finding* it. Locating a codebase's structural
+working-cost is a graph problem — closures, coupling, cycles — and graph problems
+are solved, deterministic, and token-free. So the expensive, non-deterministic LLM
+is reserved for the two things only it can do (completing edges a parser can't
+resolve, and judging whether a flagged structure is really a problem); everything
+in between is classical graph theory.
 
 It is **diagnostic, not predictive and not corrective**:
 
@@ -21,21 +36,32 @@ It is **diagnostic, not predictive and not corrective**:
 - it does **not** forecast a token bill (the bill is dominated by agent behaviour — loops, retries, cache — which structure can't see);
 - it does **not** fix anything (it names refactor *targets*; it doesn't rank or cost the refactor).
 
-Crucially, the whole analysis is **classical graph algorithms — no LLM, no tokens
-spent.** You use cheap deterministic computation to locate the expensive resource's
-pain before committing it.
-
 ## How it works
 
 ```
 repo ──► Joern CPG ──► normalized graph (files + dependency edges) ──► graph analysis ──► report
-        (joern-parse)   (tokenmass/extract.sc)                         (tokenmass/analyze.py)
+        (joern-parse)   (extract.sc + imports_from_source.py)          (analyze.py)
 ```
 
-The normalized graph (nodes = files sized in reference tokens, edges = dependency
-links) is the seam: swap the extractor without touching the analyzers, and the
-analyzers stay language-agnostic because graph theory doesn't care about the
-language.
+The **normalized graph** (nodes = files sized in reference tokens, edges =
+dependency links) is the seam: swap the extractor without touching the analyzers,
+and the analyzers stay language-agnostic because graph theory doesn't care about
+the language. (For JS/TS the edges come from source-parsed imports, because the
+CPG under-resolves dynamic languages — see the methodology note below.)
+
+## Results
+
+Two runs, on two **public** repos, producing two distinct fingerprints from the
+same token-free analysis:
+
+| Target (public repo) | Graph | Verdict | Signature | Report |
+|---|---|---|---|---|
+| [GitNexus](https://github.com/BlockSecCA/GitNexus) (TypeScript) | 68 files, 157 edges | concentrated, **clean** | shared-types hub only, no cycles, thin tail | [gitnexus.md](docs/experiments/gitnexus.md) |
+| [vulnerable-app](https://github.com/BlockSecCA/vulnerable-app) (Express/TS) | 250 files, 551 edges | concentrated, **high-stakes hubs** | `lib/insecurity.ts` fan-in 63; a 5-file SCC; worst blast radius 77% of the codebase | [vulnerable-app.md](docs/experiments/vulnerable-app.md) |
+
+The vulnerable app's security primitives (`lib/insecurity.ts`) being a
+63-dependent hub is simultaneously a maintainability and a security observation,
+surfaced with zero tokens. GitNexus is the clean control case.
 
 ## The report
 
@@ -44,28 +70,54 @@ language.
 - **Distributions** — size, out-closure (comprehension cost), in-closure (blast radius), and the over-window fraction
 - **Structure & pathologies** — SCCs (knots), god-nodes (fan-in/out), orphans
 - **Hot core** — the files where understanding-cost, change-cost, and knots coincide
-- **Verdict** — concentrated (localized, refactorable) vs diffuse (systemic) pain
+- **Verdict** — a heuristic label (read [the caveats](docs/experiments/method-challenges.md))
+
+## Reading order
+
+- **[docs/experiments/](docs/experiments/README.md)** — the index, and the methodology finding behind the runs
+- **[gitnexus.md](docs/experiments/gitnexus.md)** — run on a clean public repo
+- **[vulnerable-app.md](docs/experiments/vulnerable-app.md)** — run on the framework-heavy public target
+- **[method-challenges.md](docs/experiments/method-challenges.md)** — the limitations that require judgment (read before trusting a verdict)
+
+## Methodology note (the honest part)
+
+The graph *measurements* (closures, SCCs, fan-in, distributions) are deterministic
+and trustworthy. The two soft spots, recorded in
+[method-challenges.md](docs/experiments/method-challenges.md):
+
+1. **Graph construction is language-dependent.** Joern's CPG under-resolves
+   TypeScript cross-file edges in both directions; source-parsed imports are used
+   instead. A report is only as good as its "Graph construction quality" section.
+2. **The verdict is an uncalibrated heuristic.** Its thresholds were tuned to fit
+   these two repos (N=2). Trust the numbers and the named offenders; treat the
+   categorical label as a prompt for judgment, not a measurement.
+
+## Tools
+
+| Tool | Role |
+|------|------|
+| [Joern](https://joern.io) (v4.0.489) | CPG engine (`joern-parse`, CPGQL extraction) |
+| [joern-mcp](https://github.com/BlockSecCA/joern-mcp) | provisions/owns the Joern engine (`scripts/install.sh`) |
+| Python 3 (stdlib only) | graph analysis + source-import edges |
 
 ## Prerequisites
 
 - **Joern**, provisioned by [`joern-mcp/scripts/install.sh`](https://github.com/BlockSecCA/joern-mcp) (engine at `~/tools/joern-mcp/joern`)
 - **Python 3** (standard library only)
 
-## Status
+## Status & follow-ups
 
-v1: Joern builds the CPG; for JS/TS the dependency edges come from source-parsed
-imports (the CPG under-resolves dynamic languages). **Read
-[docs/experiments/method-challenges.md](docs/experiments/method-challenges.md)
-before trusting a verdict**: the measurements are deterministic, but the
-categorical verdict is an uncalibrated heuristic.
+v1 runs end-to-end on JS/TS. Known follow-ups: cross-check the constructed graph
+against an independent tool (e.g. madge / tsc) so wrong edges are caught, not just
+sparse ones; corpus-calibrate or drop the categorical verdict; fix the
+order-dependent per-source edge count; add community/seam detection and the
+prescriptive layer (counterfactual graph edits scored by pain-reduction). A
+presentation in the style of the sibling project is planned; the runs above are
+the recorded raw material.
 
-Known follow-ups: cross-check the constructed graph against an independent tool
-(e.g. madge / tsc for TS) so wrong edges are caught, not just sparse ones;
-corpus-calibrate or drop the categorical verdict; fix the order-dependent
-per-source edge count; add community/seam detection and the prescriptive layer
-(counterfactual graph edits scored by pain-reduction). Sibling project to
-[llm-cpg-exploration](https://github.com/BlockSecCA/llm-cpg-exploration), which
-runs the same CPG machinery for *security* design pathologies.
+## Author
+
+Carlos / [BlockSecCA](https://github.com/BlockSecCA)
 
 ## License
 
