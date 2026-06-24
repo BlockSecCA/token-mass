@@ -115,6 +115,44 @@ prescriptive layer (counterfactual graph edits scored by pain-reduction). A
 presentation in the style of the sibling project is planned; the runs above are
 the recorded raw material.
 
+## Prior art and references
+
+token-mass is a **re-derivation, not a discovery**. The mechanisms here are
+established, and several groups have gone considerably further into specific areas.
+They are recorded here in honesty, as the territory this work turned out to occupy
+and as pointers to those who went deeper:
+
+- **Change-propagation / dependency-structure metrics.** The closures and
+  blast-radius computed here are MacCormack et al.'s *propagation cost* over a
+  dependency-structure matrix (the transitive-closure "visibility" matrix). Shipped
+  in tools like [Lattix](https://docs.lattix.com/lattix/userGuide/Metrics.html),
+  applied to real systems (Almossawi,
+  [*Evolution of the Firefox Codebase*](https://almossawi.com/firefox/)), and
+  extended by others into longitudinal architecture-debt quantification, further
+  than this tool goes. Foundational paper:
+  [MacCormack, Rusnak & Baldwin, *Exploring the Structure of Complex Software Designs* (2006)](https://dash.harvard.edu/server/api/core/bitstreams/7312037d-5c4d-6bd4-e053-0100007fdf3b/content).
+- **Classic coupling / complexity metrics.** Fan-in/fan-out (Henry & Kafura, 1981),
+  cyclomatic complexity (McCabe, 1976), instability and the "zone of pain"
+  (R. C. Martin). The god-node and pathology section is these, re-derived.
+- **Graph-as-context for LLMs.** Using a code graph to fit a repo into an LLM
+  context within a token budget is already shipped in
+  [Aider's repo-map](https://aider.chat/docs/repomap.html) (personalized PageRank,
+  token-budgeted), with clones (RepoMapper, repo-graph MCP) and an arXiv treatment,
+  [*Repository Intelligence Graph: Deterministic Architectural Map for LLM Code Assistants*](https://arxiv.org/pdf/2601.10112).
+  These go further on the *selection / scheduling* use; token-mass stops at diagnosis.
+
+### A note on origin
+
+Unlike the sibling
+[llm-cpg-exploration](https://github.com/BlockSecCA/llm-cpg-exploration), whose
+inspiration came *from* the CPG-for-LLM literature (and which cites it), this
+project's inspiration came from a **tokenomics** discussion: the FinOps-for-AI
+question of how a codebase's structure drives token cost. It reached propagation
+cost and repo-map territory *independently*, from the cost side rather than the
+software-architecture side. So it converges on this prior work rather than
+descending from it — which is why it re-derives rather than builds on it. The
+references above are recorded after the fact, not as sources.
+
 ## Author
 
 Carlos / [BlockSecCA](https://github.com/BlockSecCA)
