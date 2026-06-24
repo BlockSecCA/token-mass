@@ -36,6 +36,50 @@ It is **diagnostic, not predictive and not corrective**:
 - it does **not** forecast a token bill (the bill is dominated by agent behaviour — loops, retries, cache — which structure can't see);
 - it does **not** fix anything (it names refactor *targets*; it doesn't rank or cost the refactor).
 
+## Usage
+
+**Prerequisites:** Joern provisioned at `~/tools/joern-mcp/joern` (via
+[`joern-mcp/scripts/install.sh`](https://github.com/BlockSecCA/joern-mcp));
+Python 3 (stdlib only). You do **not** need to start a Joern server — token-mass
+calls `joern-parse` directly.
+
+**Run it:**
+
+```bash
+cd ~/repos/public/token-mass
+./token-mass <repo-or-subtree> <report.md>
+```
+
+**Point it at the right thing.** Joern parses *everything* under the directory you
+give it, so keep it off `node_modules`, build output, and unrelated subtrees.
+Either point at the source subtree:
+
+```bash
+./token-mass /path/to/repo/src report.md
+```
+
+or stage a clean copy first (for repos with vendored or frontend dirs):
+
+```bash
+rsync -a --exclude node_modules --exclude .git --exclude dist \
+         --exclude build --exclude frontend \
+         /path/to/repo/ /tmp/staged/
+./token-mass /tmp/staged report.md
+```
+
+**Read the report top-down, but check one thing first:**
+
+1. **Graph construction quality** — if edge resolution is low, the shapes below are a floor, not the truth.
+2. The distributions, structure/pathologies, and hot core are **measurements** (deterministic — trust them).
+3. The **verdict** is a prompt for judgment, not a result (see [method-challenges](docs/experiments/method-challenges.md)).
+
+**Know the limits:**
+
+- **Language:** validated on TypeScript (JS likely fine). Other languages run via Joern's CPG edges but are untested; the source-import densifier is JS/TS-only.
+- **Safety:** static analysis only — it never installs or runs the target, so it is safe to point at untrusted code.
+- **Time:** the CPG build scales with code size (large repos take minutes).
+- **Ergonomics gap:** no `--exclude` flag yet, which is why the staging step exists (planned).
+
 ## How it works
 
 ```
