@@ -30,6 +30,17 @@ is reserved for the two things only it can do (completing edges a parser can't
 resolve, and judging whether a flagged structure is really a problem); everything
 in between is classical graph theory.
 
+**The "hurt" is the LLM's, and the unit is tokens.** The cost token-mass measures
+is what an *LLM* spends to work a codebase through its context-window keyhole — not
+a claim about human developer experience. (The same structural pain has long been
+studied as human maintainability cost; see [Prior art](#prior-art-and-references).
+What's LLM-specific here is the *lens* and the *unit*.) The motivation is
+**tokenomics**: the economics of LLM tokens. For the broader effort, see the
+emerging Linux Foundation tokenomics work at
+[tokeneconomics.com](https://www.tokeneconomics.com/) — token-mass shares that
+motivation, though it uses its own reference-token counting rather than
+(necessarily) any notions they adopt.
+
 It is **diagnostic, not predictive and not corrective**:
 
 - it tells you the **shape** of the challenge (concentrated vs diffuse pain, the hot core, the knots);
