@@ -111,6 +111,14 @@
 <script>
   Reveal.initialize({ hash:true, transition:'fade', controls:true, progress:true,
                       slideNumber:'c/t', mouseWheel:true, width:1280, height:760, margin:0.06 });
+  // Wheel navigates slides, EXCEPT on the graph slide, where the wheel must zoom
+  // the embedded graph. Turn mouseWheel off only there (arrows still navigate).
+  const syncWheel = () => {
+    const s = Reveal.getCurrentSlide();
+    Reveal.configure({ mouseWheel: !(s && s.hasAttribute('data-background-iframe')) });
+  };
+  Reveal.on('ready', syncWheel);
+  Reveal.on('slidechanged', syncWheel);
 </script>
 </body>
 </html>
