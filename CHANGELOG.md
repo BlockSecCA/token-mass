@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - Presentation: clickable URLs on the closing slide; long text and the graph
   caption now wrap on narrow viewports.
+- Presentation: slide numbers (current/total); smaller base font, tighter
+  spacing, and a flattened dense slide so content fits the viewport.
 
 ## [0.1.0]
 

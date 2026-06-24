@@ -8,15 +8,16 @@
 <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.1.0/dist/theme/black.css">
 <style>
   :root { --accent:#ffb454; }
-  .reveal { font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif; }
+  .reveal { font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif; font-size:30px; }
   .reveal h1,.reveal h2,.reveal h3 { text-transform:none; letter-spacing:-.01em; font-weight:700; }
-  .reveal h1 { font-size:2.6em; }
+  .reveal h1 { font-size:2.0em; }
+  .reveal h2 { font-size:1.5em; }
   .reveal .accent { color:var(--accent); }
   .reveal .lead { color:#9fb0c0; }
   .reveal section { text-align:left; }
   .reveal section.center { text-align:center; }
   .reveal ul { width:100%; }
-  .reveal li { margin:.35em 0; }
+  .reveal li { margin:.22em 0; }
   .reveal code, .reveal .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; color:var(--accent); }
   .reveal small { color:#7d8896; }
   .reveal section { overflow-wrap:anywhere; }
@@ -63,9 +64,7 @@
     <ul>
       <li>Closures, SCCs, fan-in, hot core = <strong>classical graph algorithms</strong>.</li>
       <li>Deterministic. No LLM. <span class="accent">No tokens.</span></li>
-      <li>The LLM is reserved for two bookends:
-        <ul><li>completing edges a parser can't resolve,</li>
-            <li>judging whether a flagged structure is really a problem.</li></ul></li>
+      <li>The LLM is reserved for two bookends: completing edges a parser can't resolve, and judging whether a flagged structure is real.</li>
     </ul>
     <p><small>The cheapest tool for measuring the expensive resource spends none of it.</small></p>
   </section>
@@ -116,7 +115,7 @@
 <script src="https://unpkg.com/reveal.js@5.1.0/dist/reveal.js"></script>
 <script>
   Reveal.initialize({ hash:true, transition:'fade', controls:true, progress:true,
-                      width:1280, height:760, margin:0.06 });
+                      slideNumber:'c/t', width:1280, height:760, margin:0.06 });
 </script>
 </body>
 </html>
