@@ -326,6 +326,10 @@ else:
       "cheap to work almost everywhere, and the expense is a small set of named hotspots (see "
       "Hot core). Localized and refactorable.")
 w()
+w("> *The verdict label is an uncalibrated heuristic (thresholds fit to few repos), not a "
+  "measurement. Trust the numbers and named offenders above; treat the label as a prompt for "
+  "judgment. See [method-challenges.md](method-challenges.md).*")
+w()
 w("---")
 w("*Caveats: candidates not verdicts (a god-node may be a legitimate facade; an SCC may be "
   "essential domain coupling). Static graph only — coupling hidden in DI/reflection/dynamic "

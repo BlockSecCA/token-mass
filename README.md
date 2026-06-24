@@ -53,12 +53,19 @@ language.
 
 ## Status
 
-v1: Joern-backed, file-level, call-projected edges. Known follow-ups: densify
-edges with type/import references, add articulation-points and community/seam
-detection, and the prescriptive layer (counterfactual graph edits that score
-refactors by pain-reduction). Sibling project to
+v1: Joern builds the CPG; for JS/TS the dependency edges come from source-parsed
+imports (the CPG under-resolves dynamic languages). **Read
+[docs/experiments/method-challenges.md](docs/experiments/method-challenges.md)
+before trusting a verdict**: the measurements are deterministic, but the
+categorical verdict is an uncalibrated heuristic.
+
+Known follow-ups: cross-check the constructed graph against an independent tool
+(e.g. madge / tsc for TS) so wrong edges are caught, not just sparse ones;
+corpus-calibrate or drop the categorical verdict; fix the order-dependent
+per-source edge count; add community/seam detection and the prescriptive layer
+(counterfactual graph edits scored by pain-reduction). Sibling project to
 [llm-cpg-exploration](https://github.com/BlockSecCA/llm-cpg-exploration), which
-does the same CPG machinery for *security* design pathologies.
+runs the same CPG machinery for *security* design pathologies.
 
 ## License
 

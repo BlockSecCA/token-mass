@@ -30,7 +30,7 @@
 ## Structure & pathologies
 
 - **strongly-connected components (knots):** 1 non-trivial
-  - size **5**, 5,652 tok — e.g. vulnCodeSnippet.ts, vulnCodeFixes.ts, antiCheat.ts
+  - size **5**, 5,652 tok — e.g. webhook.ts, vulnCodeSnippet.ts, vulnCodeFixes.ts
 
 - **god-nodes (highest fan-in — 'always loaded'):**
   - fan-in  63 | lib/insecurity.ts
@@ -58,7 +58,7 @@ change (in-closure), and/or trapped in a knot (SCC). These dominate the pain:
 - routes/vulnCodeFixes.ts — out 11,709 / blast 75,973 tok  [SCC]
 - data/datacreator.ts — out 27,070 / blast 15,808 tok
 - routes/verify.ts — out 19,265 / blast 16,532 tok
-- routes/chatbot.ts — out 18,263 / blast 13,633 tok
+- models/relations.ts — out 20,669 / blast 12,803 tok
 
 ## Verdict
 
@@ -69,6 +69,8 @@ change (in-closure), and/or trapped in a knot (SCC). These dominate the pain:
 - cyclic knot of 5 files (cannot be keyholed apart)
 
 Refactorable, but these hubs are where leverage *and* risk concentrate — the first targets to decouple, and the most dangerous to touch.
+
+> *The verdict label is an uncalibrated heuristic (thresholds fit to few repos), not a measurement. Trust the numbers and named offenders above; treat the label as a prompt for judgment. See [method-challenges.md](method-challenges.md).*
 
 ---
 *Caveats: candidates not verdicts (a god-node may be a legitimate facade; an SCC may be essential domain coupling). Static graph only — coupling hidden in DI/reflection/dynamic dispatch is invisible here, so a 'clean' result is not proof of health.*

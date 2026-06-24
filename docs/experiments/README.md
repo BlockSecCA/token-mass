@@ -20,6 +20,14 @@ re-implicates three-quarters of the codebase, which is both a maintainability an
 a *security* observation. GitNexus is the clean, localized case: cheap to work
 almost everywhere, no irreducible knot.
 
+## Method challenges (read before trusting a verdict)
+
+The honest limitations behind these results (what is measurement, what is
+judgment) are recorded in [method-challenges.md](method-challenges.md). Short
+version: the graph *measurements* are deterministic and trustworthy; the
+categorical *verdict* is an uncalibrated heuristic, tuned to these two repos, and
+should be read as a prompt, not a result.
+
 ## The methodology finding (the important one)
 
 We built this **Joern-backed** (the CPG is the richer, multi-language graph). But
